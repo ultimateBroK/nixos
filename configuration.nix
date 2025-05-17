@@ -15,7 +15,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos-brokie"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -42,20 +42,26 @@
     LC_TELEPHONE = "vi_VN";
     LC_TIME = "vi_VN";
   };
-
+  
   i18n.inputMethod = {
+    type = "fcitx5";
     enable = true;
-    type = "ibus";
-    ibus.engines = with pkgs.ibus-engines; [ bamboo ];
+    fcitx5.addons = with pkgs; [
+      fcitx5-unikey
+      fcitx5-bamboo
+      fcitx5-gtk
+    ];
   };
 
+
+
+
   # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  # Enable the GNOME Desktop Environment.
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -67,9 +73,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  hardware.bluetooth.enable = true; # enables support for Bluetooth
-  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -91,9 +95,8 @@
   users.users.ultimatebrok = {
     isNormalUser = true;
     description = "Hieu Nguyen";
-    extraGroups = [ "networkmanager" "wheel"  "audio"];
+    extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      kdePackages.kate
     #  thunderbird
     ];
   };
@@ -109,8 +112,6 @@
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    ibus
-    ibus-engines.bamboo
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
