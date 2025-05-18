@@ -42,26 +42,33 @@
     LC_TELEPHONE = "vi_VN";
     LC_TIME = "vi_VN";
   };
-  
+
   i18n.inputMethod = {
     type = "fcitx5";
     enable = true;
     fcitx5.addons = with pkgs; [
       fcitx5-unikey
-      fcitx5-bamboo
       fcitx5-gtk
     ];
   };
 
-
-
-
   # Enable the X11 windowing system.
+  # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  # Enable the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = false;
+
+  programs.hyprland = {
+    enable = true;
+   xwayland.enable = true; # Hỗ trợ X11 apps nếu cần
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+  };
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -74,6 +81,8 @@
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -97,6 +106,7 @@
     description = "Hieu Nguyen";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
+      kdePackages.kate
     #  thunderbird
     ];
   };
@@ -110,8 +120,46 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
+  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+  #  wget
+    wineWowPackages.waylandFull
+    git
+    appimage-run
+    libsForQt5.dolphin
+    jamesdsp
+    materialgram
+    github-desktop
+    vscode
+    ghostty
+    kitty
+    zed-editor
+    hyprland
+    waybar dunst rofi-wayland wofi
+    # Các tiện ích khác tùy chọn
+    swaybg # Đặt hình nền
+    xdg-desktop-portal-hyprland # Hỗ trợ cổng desktop
+    noto-fonts-cjk-sans
+    unstable.nerd-fonts.monaspace
+    bluez
+    bluez-tools
+    dunst
+    tofi
+    nautilus
+    polkit-kde-agent
+    swww
+    brightnessctl
+    grimblast
+    hyprlock
+    hypridle
+    wlogout
+    playerctl
+    pavucontrol
+    cliphist
+    power-profiles-daemon
+    fastfetch
+    bibata-cursors
+    fluent-icon-theme
+    gnome-clocks
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
